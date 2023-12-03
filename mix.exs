@@ -13,7 +13,9 @@ defmodule AdventOfCode2023.MixProject do
 
   def application do
     [
-      extra_applications: [:logger]
+      # this is the name of any module implementing the Application behaviour
+     # mod: {AdventOfCode2023, []},
+      applications: [:logger]
     ]
   end
 
