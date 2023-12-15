@@ -41,6 +41,6 @@ defmodule AdventOfCode2023Test do
 
   test "day_8" do
     assert AdventOfCode2023.Day8.task1() == 18827
-    assert AdventOfCode2023.Day8.task2() == 0
+    assert AdventOfCode2023.Day8.task2() == 20220305520997
   end
 end

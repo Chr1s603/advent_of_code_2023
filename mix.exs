@@ -21,6 +21,7 @@ defmodule AdventOfCode2023.MixProject do
 
   defp deps do
     [
+      {:math, "~> 0.7.0"}
     ]
   end
 end
