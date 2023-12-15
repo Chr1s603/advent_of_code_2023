@@ -1,20 +1,21 @@
 defmodule AdventOfCode2023.Day8 do
-  import Math
-
   def task1 do
     [instructions, map, _] = load_instruction_and_map()
-    get_period_for_being_in_xxZ({instructions, 0, 0, 0}, {map, :AAA})
+    get_period_for_pos_ending_with_z({instructions, 0, 0, 0}, {map, :AAA})
   end
 
   def task2 do
     [instructions, map, all_ending_a] = load_instruction_and_map()
 
-    periods_for_reaching_xxZ =
-      Enum.map(all_ending_a, &get_period_for_being_in_xxZ({instructions, 0, 0, 0}, {map, &1}))
+    periods_for_pos_ending_with_Z =
+      Enum.map(
+        all_ending_a,
+        &get_period_for_pos_ending_with_z({instructions, 0, 0, 0}, {map, &1})
+      )
 
     Enum.reduce(
-      Enum.slice(periods_for_reaching_xxZ, 1, Enum.count(periods_for_reaching_xxZ)),
-      Enum.at(periods_for_reaching_xxZ, 0),
+      Enum.drop(periods_for_pos_ending_with_Z, 1),
+      Enum.at(periods_for_pos_ending_with_Z, 0),
       fn current_period, lcm -> Math.lcm(current_period, lcm) end
     )
   end
@@ -33,20 +34,18 @@ defmodule AdventOfCode2023.Day8 do
 
     all_ending_a =
       map_str
-      |> Enum.reject(fn [pos, _] -> not String.ends_with?(pos, "A") end)
+      |> Enum.filter(fn [pos, _] -> String.ends_with?(pos, "A") end)
       |> Enum.map(fn [pos, _] -> String.to_atom(pos) end)
 
     map =
-      map_str
-      |> Enum.map(fn [pos, [l, r]] ->
-        [String.to_atom(pos), [String.to_atom(l), String.to_atom(r)]]
+      Map.new(map_str, fn [pos, [l, r]] ->
+        {String.to_atom(pos), [String.to_atom(l), String.to_atom(r)]}
       end)
-      |> Map.new(fn [pos, lr] -> {pos, lr} end)
 
     [String.to_charlist(instructions), map, all_ending_a]
   end
 
-  defp get_period_for_being_in_xxZ(
+  defp get_period_for_pos_ending_with_z(
          {instructions, idx, last_idx_when_reaching_pos_with_z, reached_cnt},
          {map, pos}
        ) do
@@ -59,19 +58,17 @@ defmodule AdventOfCode2023.Day8 do
       at_pos_with_final_z ->
         reached_cnt = reached_cnt + if at_pos_with_final_z, do: +1, else: 0
 
-        cond do
-          reached_cnt >= 2 ->
-            idx - last_idx_when_reaching_pos_with_z
-
-          true ->
-            get_period_for_being_in_xxZ(
-              {instructions, idx + 1, idx, reached_cnt},
-              {map, next_pos}
-            )
+        if reached_cnt >= 2 do
+          idx - last_idx_when_reaching_pos_with_z
+        else
+          get_period_for_pos_ending_with_z(
+            {instructions, idx + 1, idx, reached_cnt},
+            {map, next_pos}
+          )
         end
 
       not at_pos_with_final_z ->
-        get_period_for_being_in_xxZ(
+        get_period_for_pos_ending_with_z(
           {instructions, idx + 1, last_idx_when_reaching_pos_with_z, reached_cnt},
           {map, next_pos}
         )
