@@ -1,20 +1,31 @@
 defmodule AdventOfCode2023.Day9 do
   def task1 do
-    File.stream!("data/day9.txt")
-    |> Enum.map(&String.trim/1)
-    |> Enum.map(&String.split(&1, " "))
-    |> Enum.map(fn str_list -> Enum.map(str_list, &String.to_integer/1) end)
-    |> Enum.map(&calculate_differences([&1]))
+    load_difference_lists()
     |> Enum.map(fn lists ->
       acc = Enum.at(lists, -1) ++ [0]
-      extrapolate({Enum.drop(lists, -1), [acc]})
+      extrapolate({Enum.drop(lists, -1), [acc]}, false)
     end)
     |> Enum.map(&List.last/1)
     |> Enum.sum()
   end
 
   def task2 do
-    0
+    load_difference_lists()
+    |> Enum.map(fn lists ->
+      # NOTE: acc is all zero
+      acc = Enum.at(lists, -1) ++ [0]
+      extrapolate({Enum.drop(lists, -1), [acc]}, true)
+    end)
+    |> Enum.map(&List.first/1)
+    |> Enum.sum()
+  end
+
+  defp load_difference_lists() do
+    File.stream!("data/day9.txt")
+    |> Enum.map(&String.trim/1)
+    |> Enum.map(&String.split(&1, " "))
+    |> Enum.map(fn str_list -> Enum.map(str_list, &String.to_integer/1) end)
+    |> Enum.map(&calculate_differences([&1]))
   end
 
   defp calculate_differences(lists) do
@@ -39,13 +50,19 @@ defmodule AdventOfCode2023.Day9 do
     end
   end
 
-  defp extrapolate({old_lists, acc}) do
+  defp extrapolate({old_lists, acc}, backwards) do
     new_line = Enum.at(old_lists, -1)
-    difference = Enum.at(Enum.at(acc, 0), -1)
-    new_line = new_line ++ [Enum.at(new_line, -1) + difference]
+    difference = Enum.at(Enum.at(acc, 0), if(backwards, do: 0, else: -1))
+
+    new_line =
+      if backwards do
+        [Enum.at(new_line, 0) - difference] ++ new_line
+      else
+        new_line ++ [Enum.at(new_line, -1) + difference]
+      end
 
     if Enum.count(old_lists) - 1 > 0 do
-      extrapolate({Enum.drop(old_lists, -1), [new_line | acc]})
+      extrapolate({Enum.drop(old_lists, -1), [new_line | acc]}, backwards)
     else
       new_line
     end
