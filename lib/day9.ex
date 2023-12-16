@@ -23,8 +23,7 @@ defmodule AdventOfCode2023.Day9 do
   defp load_difference_lists() do
     File.stream!("data/day9.txt")
     |> Enum.map(&String.trim/1)
-    |> Enum.map(&String.split(&1, " "))
-    |> Enum.map(fn str_list -> Enum.map(str_list, &String.to_integer/1) end)
+    |> Enum.map(fn s -> String.split(s, " ") |> Enum.map(&String.to_integer/1) end)
     |> Enum.map(&calculate_differences([&1]))
   end
 
