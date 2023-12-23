@@ -1,6 +1,5 @@
 defmodule AdventOfCode2023.Day13 do
   def task1, do: parse_patterns() |> Enum.map(&process_pattern(&1, false)) |> Enum.sum()
-
   def task2, do: parse_patterns() |> Enum.map(&process_pattern(&1, true)) |> Enum.sum()
 
   defp parse_patterns do
