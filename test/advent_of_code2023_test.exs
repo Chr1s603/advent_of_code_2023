@@ -26,12 +26,12 @@ defmodule AdventOfCode2023Test do
 
   test "day_5" do
     assert AdventOfCode2023.Day5.task1() == 261668924
-    # assert AdventOfCode2023.Day5.task2() == 24261545
+    assert AdventOfCode2023.Day5.task2() == 24261545
   end
 
   test "day_6" do
     assert AdventOfCode2023.Day6.task1() == 138915
-    # assert AdventOfCode2023.Day6.task2() == 27340847
+    assert AdventOfCode2023.Day6.task2() == 27340847
   end
 
   test "day_7" do
@@ -55,13 +55,13 @@ defmodule AdventOfCode2023Test do
   end
 
   test "day_11" do
-    #assert AdventOfCode2023.Day11.task1() == 0
-    #assert AdventOfCode2023.Day11.task2() == 0
+    assert AdventOfCode2023.Day11.task1() == 0
+    assert AdventOfCode2023.Day11.task2() == 0
   end
 
   test "day_12" do
-    #assert AdventOfCode2023.Day11.task1() == 0
-    #assert AdventOfCode2023.Day11.task2() == 0
+    assert AdventOfCode2023.Day11.task1() == 0
+    assert AdventOfCode2023.Day11.task2() == 0
   end
 
   test "day_13" do
@@ -72,5 +72,10 @@ defmodule AdventOfCode2023Test do
   test "day_14" do
     assert AdventOfCode2023.Day14.task1() == 0
     assert AdventOfCode2023.Day14.task2() == 0
+  end
+
+  test "day_15" do
+    assert AdventOfCode2023.Day15.task1() == 503154
+    assert AdventOfCode2023.Day15.task2() == 251353
   end
 end
