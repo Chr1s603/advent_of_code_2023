@@ -10,7 +10,49 @@ defmodule AdventOfCode2023.Day19 do
   end
 
   def task2 do
-    0
+    {workflows, _parts} = load_input()
+
+    combs(workflows, Map.fetch!(workflows, :in), %{
+      :x => {1, 4001},
+      :m => {1, 4001},
+      :a => {1, 4001},
+      :s => {1, 4001}
+    })
+  end
+
+  defp combs(map, [{field, op, thresh, res} | tail], threshs) do
+    # New constraints for {f,o,t,r} and the reversed ones for res
+    {new_thresh, rev_thresh} = split_treshs(threshs, field, op, thresh)
+    combs(map, res, new_thresh) + combs(map, tail, rev_thresh)
+  end
+
+  defp combs(_map, :A, threshs) do
+    threshs
+    |> Enum.map(fn {_, {min, max}} -> max - min end)
+    |> Enum.map(&max(&1, 0))
+    |> Enum.reduce(1, &(&1 * &2))
+  end
+
+  defp combs(_map, :R, _threshs), do: 0
+  defp combs(map, [key], threshs), do: combs(map, key, threshs)
+  defp combs(map, key, threshs), do: combs(map, Map.fetch!(map, key), threshs)
+
+  defp split_treshs(threshs, field, ">", thresh) do
+    {Map.update!(threshs, field, fn {min, max} ->
+       {max(min, thresh + 1), max}
+     end),
+     Map.update!(threshs, field, fn {min, max} ->
+       {min, min(max, thresh + 1)}
+     end)}
+  end
+
+  defp split_treshs(threshs, field, "<", thresh) do
+    {Map.update!(threshs, field, fn {min, max} ->
+       {min, min(max, thresh)}
+     end),
+     Map.update!(threshs, field, fn {min, max} ->
+       {max(min, thresh), max}
+     end)}
   end
 
   defp score({:R, _}), do: 0
